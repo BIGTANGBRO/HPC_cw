@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Workspace Name="CW" Database="" Version="10000">
+  <Project Name="coursework" Path="coursework/coursework.project" Active="Yes"/>
+  <BuildMatrix>
+    <WorkspaceConfiguration Name="Debug" Selected="yes">
+      <Environment/>
+      <Project Name="CW" ConfigName="Debug"/>
+      <Project Name="CW" ConfigName="Debug"/>
+      <Project Name="coursework" ConfigName="Debug"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Release" Selected="yes">
+      <Environment/>
+      <Project Name="CW" ConfigName="Release"/>
+      <Project Name="CW" ConfigName="Release"/>
+      <Project Name="coursework" ConfigName="Release"/>
+    </WorkspaceConfiguration>
+  </BuildMatrix>
+</CodeLite_Workspace>
