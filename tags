@@ -1,1 +1,4 @@
-main	/home/jt2418/Desktop/hpc/CW/coursework/main.cpp	/^int main()$/;"	function	line:4	signature:()	returns:int 
+REACT_H	/home/jt2418/Desktop/hpc/CW/coursework/React.h	/^#define REACT_H$/;"	macro	line:2
+React	/home/jt2418/Desktop/hpc/CW/coursework/React.h	/^class React$/;"	class	line:4
+React	/home/jt2418/Desktop/hpc/CW/coursework/React.h	/^	React();$/;"	prototype	line:7	class:React	access:public	signature:()
+~React	/home/jt2418/Desktop/hpc/CW/coursework/React.h	/^	~React();$/;"	prototype	line:8	class:React	access:public	signature:()
