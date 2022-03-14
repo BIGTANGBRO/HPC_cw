@@ -6,6 +6,7 @@ class ReactionDiffusion
 //declaration
 public:
 	ReactionDiffusion();
+	ReactionDiffusion(double &u, double &v);
 	~ReactionDiffusion();
 	void SetParameters(double &u, double &v);
 	void SetInitialConditions();
