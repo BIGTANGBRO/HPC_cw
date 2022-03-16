@@ -6,15 +6,16 @@ class ReactionDiffusion
 //declaration
 public:
 	ReactionDiffusion();
-	ReactionDiffusion(double &u, double &v);
+	ReactionDiffusion(double *u, double *v);
 	~ReactionDiffusion();
-	void SetParameters(double &u, double &v);
-	void SetInitialConditions();
+	
+	void SetParameters();
+	void SetInitialConditions(int &Nx, int &Ny, double &a);
 	void TimeIntegrations(); 
 	
 private:
-	double u;
-	double v;
+	double *u;
+	double *v;
 
 };
 
