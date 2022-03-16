@@ -6,7 +6,7 @@ using namespace std;
 
 ReactionDiffusion::ReactionDiffusion()
 {
-	this ->Nx = 50;
+	this ->Nx = 51;
 	this ->Ny = 101;
 	this ->u = new double[this->Nx*this->Ny];
 	this ->v = new double[this->Nx*this->Ny];
@@ -41,9 +41,9 @@ void ReactionDiffusion::SetInitialConditions(){
 	for (int i = 0;i < Ny;i++){
 		for (int j = 0;j < Nx;j++){
 			if (j > Nx/2){
-				u[j*Ny + i] = 1;
+				this->u[j*Ny + i] = 1;
 			}else{
-				u[j*Ny + i] = 0;
+				this->u[j*Ny + i] = 0;
 			}
 		}
 	}
@@ -51,9 +51,9 @@ void ReactionDiffusion::SetInitialConditions(){
 	for (int i = 0;i < Ny;i++){
 		for (int j = 0;j < Nx;j++){
 			if (i < Ny/2){
-				v[j*Ny + i] = this->a/2.0;
+				this->v[j*Ny + i] = this->a/2.0;
 			}else{
-				v[j*Ny + i] = 0;
+				this->v[j*Ny + i] = 0;
 			}
 		}
 	}	
