@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cmath>
+#include <fstream>
 #include <cblas.h>
 #include <cstdlib>
 using namespace std;
@@ -127,9 +128,9 @@ int main()
 	double eps;
 	double h = 1.0;
 	
-	T = 10;
+	T = 100;
 	dt = 0.001; 
-	Nx = 51;
+	Nx = 101;
 	Ny = 51;
 	a = 0.75;
 	b = 0.06;
@@ -140,63 +141,38 @@ int main()
 	//initialize
 	double *u = new double[Ny*Nx];
 	double *v = new double[Ny*Nx];
-	double *A1 = new double[Ny*Nx];
-	double *A2 = new double[Ny*Nx];
+	double *A1 = new double[Ny*Ny];
+	double *A2 = new double[Ny*Ny];
+	double *B1 = new double[Nx*Nx];
+	double *B2 = new double[Nx*Nx];
 	
 	//fill the matrix
 	fillMatrixUInitial(Nx, Ny, u);
 	fillMatrixVInitial(Nx, Ny, v, a);
 	//for U
-	fillMatrix1(Nx, Ny, A1, mu1, h, dt);
+	fillMatrix1(Ny, Ny, A1, mu1, h, dt);
+	fillMatrix1(Nx, Nx, B1, mu1, h, dt);
 	//for V
-	fillMatrix1(Ny, Nx, A2, mu2, h, dt);
+	fillMatrix1(Ny, Ny, A2, mu2, h, dt);
+	fillMatrix1(Nx, Nx, B2, mu2, h, dt);
 	
 	//then do the iteration
 	for (int i = 0;i<T/dt;i++){
 		double *tempU1 = new double[Ny*Nx];
 		double *tempV1 = new double[Ny*Nx];
 		
-		for (int j = 0;j<Nx;j++){
-			double *tempUCol1 = new double[Ny];			
-			double *tempVCol1 = new double[Ny];
-
-			double *uCol = new double[Ny];
-			double *vCol = new double[Ny];
-		
-			getCol(j, Nx, Ny, u, uCol);
-			getCol(j, Nx, Ny, v, vCol);
-		
-			cblas_dgemv(CblasColMajor, CblasNoTrans, Ny, Nx, 1.0, A1, Ny, uCol, 1, 0.0, tempUCol1 ,1);
-			fillCol(j, Nx, Ny, tempU1, tempUCol1);		
-		
-			cblas_dgemv(CblasColMajor, CblasNoTrans, Ny, Nx, 1.0, A2, Ny, vCol, 1, 0.0, tempVCol1 ,1);
-			fillCol(j, Nx, Ny, tempV1, tempVCol1);			
-		}
-
-		
 		double *tempU2 = new double[Ny*Nx];
 		double *tempV2 = new double[Ny*Nx];
-		for (int j = 0;j<Ny;j++){
-			double *tempURow2 = new double[Nx];			
-			double *tempVRow2 = new double[Nx];
-
-			double *uRow = new double[Nx];
-			double *vRow = new double[Nx];
 		
-			getRow(j, Nx, Ny, u, uRow);
-			getRow(j, Nx, Ny, v, vRow);
-
-			cblas_dgemv(CblasColMajor, CblasTrans, Ny, Nx, 1.0, A1, Ny, uRow, 1, 0.0, tempURow2, 1);
-			fillRow(j, Nx, Ny, tempU2, tempURow2);		
+		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, Ny, Nx, Ny, 1.0, A1, Ny, u, Ny, 0.0, tempU1, Ny);
+		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, Ny, Nx, Ny, 1.0, A2, Ny, v, Ny, 0.0, tempV1, Ny);
 		
-			cblas_dgemv(CblasColMajor, CblasTrans, Ny, Nx, 1.0, A2, Ny, vRow, 1, 0.0, tempVRow2, 1);
-			fillRow(j, Nx, Ny, tempV2, tempVRow2);	
-		}
+		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, Ny, Nx, Nx, 1.0, u, Ny, B1, Nx, 0.0, tempU2, Ny);
+		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, Ny, Nx, Nx, 1.0, v, Ny, B2, Nx, 0.0, tempV2, Ny);
 	
 		double *f1 = getf1(Nx, Ny, u, v, eps, a, b);
 		double *f2 = getf2(Nx, Ny, u, v);
 		
-		printMatrix(f1,Nx,Ny);
 		cblas_daxpy(Nx*Ny,dt,tempU1,1,u,1);
 		cblas_daxpy(Nx*Ny,dt,tempU2,1,u,1);
 
@@ -204,12 +180,21 @@ int main()
 		cblas_daxpy(Nx*Ny,dt,tempV2,1,v,1);
 	
 		cblas_daxpy(Nx*Ny,dt,f1,1,u,1);
-		cblas_daxpy(Nx*Ny,dt,f2,1,v,1);		
-		printMatrix(u,Nx,Ny);
-		cout << endl;
-	
+		cblas_daxpy(Nx*Ny,dt,f2,1,v,1);	
 	}
-	cout << u[1] << endl;
-
+	
+	
+	ofstream outfile;
+	outfile.open("output.txt");
+	for (int i = 0;i < Ny;i++){
+		for (int j = 0;j < Nx;j++){
+			outfile << "x" << j << " " << "y" << i << " " << u[j*Ny + i] << " " << v[j*Ny + i] << endl;
+		}
+		outfile << endl;
+	}
+	
+	outfile.close();
+	
+	cout << "The process finished" << endl;
 	return 0;
 }
