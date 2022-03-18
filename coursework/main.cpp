@@ -3,7 +3,9 @@
 #include <fstream>
 #include <cblas.h>
 #include <cstdlib>
-#include <ReactionDiffusion.hpp>
+#include "omp.h"
+#include "ReactionDiffusion.hpp"
+#include <time.h>
 using namespace std;
 
 void printMatrix(double *H, int &Nx, int &Ny){
@@ -21,12 +23,13 @@ void printVector(double *H, int &Nx){
 	}
 }
 
-int main()	
+int main(int argc, char *argv[])	
 {
 	ReactionDiffusion reaction;
 	reaction.SetInitialConditions();
 	reaction.TimeIntegrations();
 	reaction.writeInTxt();
+	
 	cout << "The process finished" << endl;
 	return 0;
 }

@@ -8,6 +8,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="Makefile"/>
     <File Name="ReactionDiffusion.cpp"/>
     <File Name="ReactionDiffusion.hpp"/>
     <File Name="main.cpp"/>

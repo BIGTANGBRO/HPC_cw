@@ -2,11 +2,12 @@
 #include <cblas.h>
 #include <cstdlib>
 #include <fstream>
+#include "omp.h"
 using namespace std;
 
 ReactionDiffusion::ReactionDiffusion()
 {
-	this ->Nx = 51;
+	this ->Nx = 101;
 	this ->Ny = 101;
 	this ->u = new double[this->Nx*this->Ny];
 	this ->v = new double[this->Nx*this->Ny];
@@ -30,6 +31,7 @@ void ReactionDiffusion::SetParameters(int &Nx, int &Ny, int &T, double &dt, doub
 	this -> a = a;
 	this -> b = b;
 	this -> mu1 = mu1;
+	
 	this -> mu2 = mu2;
 	this -> eps = eps;
 	this -> h = h;
@@ -61,18 +63,19 @@ void ReactionDiffusion::SetInitialConditions(){
 
 double* ReactionDiffusion::fillMatrixNy(double &mu){
 	double *A = new double[this->Ny * this->Ny];
-	int j;
-	for (int i = 1;i < this->Ny-1;i++){
-		j = i-1;
-		A[(0+j)*Ny + i] = 1.0 * mu / (h*h);
-		A[(1+j)*Ny + i] = -2.0 * mu / (h*h);
-		A[(2+j)*Ny + i] = 1.0 * mu / (h*h);
+	int i;
+	
+	#pragma omp parallel for
+	for (i = 1;i < this->Ny-1;i++){
+		//A[(i-1)*Ny + i] = 1.0 * mu / (h*h);
+		A[(i)*Ny + i] = -2.0 * mu / (h*h);
+		A[(1+i)*Ny + i] = 1.0 * mu / (h*h);
 	}
 	
 	A[0*Ny + 0] = -1.0 * mu / (h*h);
 	A[1*Ny + 0] = 1.0 * mu / (h*h);
 	
-	A[(Ny - 2)*Ny + (Ny-1)] = 1.0 * mu / (h*h);
+	//A[(Ny - 2)*Ny + (Ny-1)] = 1.0 * mu / (h*h);
 	A[(Ny - 1)*Ny + (Ny-1)] = -1.0 * mu / (h*h);
 	
 	return A;
@@ -80,18 +83,19 @@ double* ReactionDiffusion::fillMatrixNy(double &mu){
 
 double* ReactionDiffusion::fillMatrixNx(double &mu){
 	double *B = new double[this->Nx * this->Nx];
-	int j;
-	for (int i = 1;i < this->Nx-1;i++){
-		j = i-1;
-		B[(0+j)*Nx + i] = 1.0 * mu / (h*h);
-		B[(1+j)*Nx + i] = -2.0 * mu / (h*h);
-		B[(2+j)*Nx + i] = 1.0 * mu / (h*h);
+	int i;
+	
+	#pragma omp parallel for
+	for (i = 1;i < this->Nx-1;i++){
+		//B[(i-1)*Nx + i] = 1.0 * mu / (h*h);
+		B[(i)*Nx + i] = -2.0 * mu / (h*h);
+		B[(i+1)*Nx + i] = 1.0 * mu / (h*h);
 	}
 	
 	B[0*Nx + 0] = -1.0 * mu / (h*h);
 	B[1*Nx + 0] = 1.0 * mu / (h*h);
 	
-	B[(Nx - 2)*Nx + (Nx-1)] = 1.0 * mu / (h*h);
+	//B[(Nx - 2)*Nx + (Nx-1)] = 1.0 * mu / (h*h);
 	B[(Nx - 1)*Nx + (Nx-1)] = -1.0 * mu / (h*h);
 	
 	return B;
@@ -99,31 +103,42 @@ double* ReactionDiffusion::fillMatrixNx(double &mu){
 
 double* ReactionDiffusion::getf1(){
 	double *f1 = new double[Ny*Nx];
-	for (int i = 0;i<Ny;i++){
-		for (int j = 0;j<Nx;j++){
+	int i = 0;
+	int j = 0;
+		
+	#pragma omp parallel for private(j)
+	for (i = 0;i<Ny;i++){
+		for (j = 0;j<Nx;j++){
 			f1[j*Ny+i] = eps*u[j*Ny + i]*(1.0-u[j*Ny+i])*(u[j*Ny+i]-(v[j*Ny+i]+b)/a);
 		}
 	}
+	
 	return f1;
 } 
 
 double* ReactionDiffusion::getf2(){
 	double *f2 = new double[Ny*Nx];
-	for (int i = 0;i<Ny;i++){
-		for (int j = 0;j<Nx;j++){
+	int i = 0;
+	int j = 0;
+	
+	#pragma omp parallel for private(j)
+	for (i = 0;i<Ny;i++){
+		for (j = 0;j<Nx;j++){
 			f2[j*Ny+i] = u[j*Ny + i] * u[j*Ny + i] * u[j*Ny + i] - v[j*Ny+i];
 		}
 	}
+	
 	return f2;
 }
 
 void ReactionDiffusion::TimeIntegrations(){
+	//initilization
 	double *A1 = fillMatrixNy(this->mu1);
 	double *A2 = fillMatrixNy(this->mu2);
 	double *B1 = fillMatrixNx(this->mu1);
 	double *B2 = fillMatrixNx(this->mu2);
 	
-	//then do the iteration
+	//Do the iteration
 	for (int i = 0;i<T/dt;i++){
 		double *tempU1 = new double[Ny*Nx];
 		double *tempV1 = new double[Ny*Nx];
@@ -131,25 +146,54 @@ void ReactionDiffusion::TimeIntegrations(){
 		double *tempU2 = new double[Ny*Nx];
 		double *tempV2 = new double[Ny*Nx];
 		
-		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, Ny, Nx, Ny, 1.0, A1, Ny, u, Ny, 0.0, tempU1, Ny);
-		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, Ny, Nx, Ny, 1.0, A2, Ny, v, Ny, 0.0, tempV1, Ny);
+		//using symmetrical matrix
+		#pragma omp parallel
+		{
+			#pragma omp single nowait
+			{
+				#pragma omp task
+				cblas_dsymm(CblasColMajor, CblasLeft, CblasUpper, Ny, Nx, 1.0, A1, Ny, u, Ny, 0.0, tempU1, Ny);
+				//cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, Ny, Nx, Ny, 1.0, A1, Ny, u, Ny, 0.0, tempU1, Ny);
+								
+				#pragma omp task
+				cblas_dsymm(CblasColMajor, CblasLeft, CblasUpper, Ny, Nx, 1.0, A2, Ny, v, Ny, 0.0, tempV1, Ny);
+				//cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, Ny, Nx, Ny, 1.0, A2, Ny, v, Ny, 0.0, tempV1, Ny);
+
+				#pragma omp task
+				cblas_dsymm(CblasColMajor, CblasRight, CblasUpper, Ny, Nx, 1.0, B1, Nx, u, Ny, 0.0, tempU2, Ny);
+				//cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, Ny, Nx, Nx, 1.0, u, Ny, B1, Nx, 0.0, tempU2, Ny);
+				
+				#pragma omp task
+				cblas_dsymm(CblasColMajor, CblasRight, CblasUpper, Ny, Nx, 1.0, B2, Nx, v, Ny, 0.0, tempV2, Ny);
+				//cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, Ny, Nx, Nx, 1.0, v, Ny, B2, Nx, 0.0, tempV2, Ny);
+			}
+		}
 		
-		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, Ny, Nx, Nx, 1.0, u, Ny, B1, Nx, 0.0, tempU2, Ny);
-		cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, Ny, Nx, Nx, 1.0, v, Ny, B2, Nx, 0.0, tempV2, Ny);
-	
 		double *f1 = this->getf1();
 		double *f2 = this->getf2();
 		
-		cblas_daxpy(Nx*Ny,dt,tempU1,1,u,1);
-		cblas_daxpy(Nx*Ny,dt,tempU2,1,u,1);
-
-		cblas_daxpy(Nx*Ny,dt,tempV1,1,v,1);
-		cblas_daxpy(Nx*Ny,dt,tempV2,1,v,1);
-	
-		cblas_daxpy(Nx*Ny,dt,f1,1,u,1);
-		cblas_daxpy(Nx*Ny,dt,f2,1,v,1);	
-	}
-	
+		#pragma omp parallel
+		{
+			#pragma omp single nowait
+			{
+				#pragma omp task
+				cblas_daxpy(Nx*Ny,dt,tempU1,1,u,1);
+				#pragma omp task
+				cblas_daxpy(Nx*Ny,dt,tempU2,1,u,1);
+				
+				#pragma omp task
+				cblas_daxpy(Nx*Ny,dt,tempV1,1,v,1);
+				#pragma omp task
+				cblas_daxpy(Nx*Ny,dt,tempV2,1,v,1);
+				
+				#pragma omp task
+				cblas_daxpy(Nx*Ny,dt,f1,1,u,1);
+				#pragma omp task
+				cblas_daxpy(Nx*Ny,dt,f2,1,v,1);	
+				
+			}
+		}
+	}	
 }
 
 void ReactionDiffusion::writeInTxt(){
