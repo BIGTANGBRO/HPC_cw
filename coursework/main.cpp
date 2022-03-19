@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
 	
 	//calculation process
 	ReactionDiffusion reaction;
-	//reaction.SetParameters(Nx, Ny, T, dt, a, b, mu1, mu2, eps);
+	reaction.SetParameters(Nx, Ny, T, dt, a, b, mu1, mu2, eps);
 	reaction.SetInitialConditions();
 	reaction.TimeIntegrations();
 	reaction.writeInTxt();
