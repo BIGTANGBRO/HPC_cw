@@ -14,7 +14,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=Jiaxuan Tang
-Date                   :=18/03/22
+Date                   :=19/03/22
 CodeLitePath           :=/home/jt2418/.codelite
 LinkerName             :=g++
 SharedObjectLinkerName :=g++ -shared -fPIC
@@ -39,8 +39,8 @@ LinkOptions            :=
 IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). 
 IncludePCH             := 
 RcIncludePath          := 
-Libs                   := $(LibrarySwitch)blas 
-ArLibs                 :=  "blas" 
+Libs                   := $(LibrarySwitch)blas $(LibrarySwitch)boost_program_options 
+ArLibs                 :=  "blas" "boost_program_options" 
 LibPath                := $(LibraryPathSwitch). 
 
 ##

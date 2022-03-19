@@ -4,6 +4,7 @@
 #include <fstream>
 #include "omp.h"
 using namespace std;
+//author: Jiaxuan Tang
 
 ReactionDiffusion::ReactionDiffusion()
 {
@@ -21,7 +22,7 @@ ReactionDiffusion::ReactionDiffusion()
 	this ->h = 1.0;
 }
 
-void ReactionDiffusion::SetParameters(int &Nx, int &Ny, int &T, double &dt, double &a, double &b, double &mu1, double &mu2, double &eps, double &h){
+void ReactionDiffusion::SetParameters(int &Nx, int &Ny, int &T, double &dt, double &a, double &b, double &mu1, double &mu2, double &eps){
 	this -> Nx = Nx;
 	this -> Ny = Nx;
 	this -> u = new double[this->Nx*this->Ny];
@@ -31,10 +32,8 @@ void ReactionDiffusion::SetParameters(int &Nx, int &Ny, int &T, double &dt, doub
 	this -> a = a;
 	this -> b = b;
 	this -> mu1 = mu1;
-	
 	this -> mu2 = mu2;
 	this -> eps = eps;
-	this -> h = h;
 }
 
 void ReactionDiffusion::SetInitialConditions(){
@@ -61,6 +60,7 @@ void ReactionDiffusion::SetInitialConditions(){
 	}	
 }
 
+//fill the big matrix1
 double* ReactionDiffusion::fillMatrixNy(double &mu){
 	double *A = new double[this->Ny * this->Ny];
 	int i;
@@ -81,6 +81,7 @@ double* ReactionDiffusion::fillMatrixNy(double &mu){
 	return A;
 }
 
+//fill the big matrix2
 double* ReactionDiffusion::fillMatrixNx(double &mu){
 	double *B = new double[this->Nx * this->Nx];
 	int i;
@@ -101,12 +102,14 @@ double* ReactionDiffusion::fillMatrixNx(double &mu){
 	return B;
 }
 
+//f1 calculation
 double* ReactionDiffusion::getf1(){
 	double *f1 = new double[Ny*Nx];
 	int i = 0;
 	int j = 0;
-		
-	#pragma omp parallel for private(j)
+	
+	//for each element
+	#pragma omp parallel for
 	for (i = 0;i<Ny;i++){
 		for (j = 0;j<Nx;j++){
 			f1[j*Ny+i] = eps*u[j*Ny + i]*(1.0-u[j*Ny+i])*(u[j*Ny+i]-(v[j*Ny+i]+b)/a);
@@ -116,12 +119,13 @@ double* ReactionDiffusion::getf1(){
 	return f1;
 } 
 
+//f2 calculation
 double* ReactionDiffusion::getf2(){
 	double *f2 = new double[Ny*Nx];
 	int i = 0;
 	int j = 0;
 	
-	#pragma omp parallel for private(j)
+	#pragma omp parallel for
 	for (i = 0;i<Ny;i++){
 		for (j = 0;j<Nx;j++){
 			f2[j*Ny+i] = u[j*Ny + i] * u[j*Ny + i] * u[j*Ny + i] - v[j*Ny+i];
@@ -146,7 +150,7 @@ void ReactionDiffusion::TimeIntegrations(){
 		double *tempU2 = new double[Ny*Nx];
 		double *tempV2 = new double[Ny*Nx];
 		
-		//using symmetrical matrix
+		//using symmetrical matrix, calculate u in x and y directions
 		#pragma omp parallel
 		{
 			#pragma omp single nowait
@@ -172,6 +176,7 @@ void ReactionDiffusion::TimeIntegrations(){
 		double *f1 = this->getf1();
 		double *f2 = this->getf2();
 		
+		//add together to get u and v for each iteration
 		#pragma omp parallel
 		{
 			#pragma omp single nowait
@@ -198,6 +203,7 @@ void ReactionDiffusion::TimeIntegrations(){
 
 void ReactionDiffusion::writeInTxt(){
 	ofstream outfile;
+	//write in local directory
 	outfile.open("output.txt");
 	for (int i = 0;i < Ny;i++){
 		for (int j = 0;j < Nx;j++){

@@ -1,7 +1,7 @@
 CC       = g++
 CXX      = g++
 CXXFLAGS = -Wall -O2 -fopenmp
-LDLIBS   = -lblas
+LDLIBS   = -lblas -lboost_program_options
 HDRS = ReactionDiffusion.hpp
 OBJS = main.o ReactionDiffusion.o
 

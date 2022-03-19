@@ -1,5 +1,6 @@
 #ifndef REACTIONDIFFUSION_HPP
 #define REACTIONDIFFUSION_HPP
+//author: Jiaxuan Tang
 
 class ReactionDiffusion
 {
@@ -9,7 +10,7 @@ public:
 	~ReactionDiffusion();
 		
 	//methods
-	void SetParameters(int &Nx, int &Ny, int &T, double &dt, double &a, double &b, double &mu1, double &mu2, double &eps, double &h);
+	void SetParameters(int &Nx, int &Ny, int &T, double &dt, double &a, double &b, double &mu1, double &mu2, double &eps);
 	void SetInitialConditions();
 	void TimeIntegrations(); 
 	void writeInTxt();
@@ -29,6 +30,7 @@ private:
 	double eps;
 	double h;
 	
+	//Own methods
 	double *fillMatrixNy(double &mu);
 	double *fillMatrixNx(double &mu);
 	double *getf1();
