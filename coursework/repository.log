@@ -1,0 +1,216 @@
+commit 67652a20ccf6bd0ad5b6c74961e212d0acfcf11b
+Author: SCARLETRAIN <992127134@qq.com>
+Date:   Wed Mar 23 14:19:37 2022 +0000
+
+    add test cases
+
+M	coursework/Makefile
+M	coursework/ReactionDiffusion.cpp
+M	coursework/ReactionDiffusion.hpp
+M	coursework/main.cpp
+M	coursework/output.txt
+
+commit 24212caf6bba0cd98baefc2b720a36c10430264a
+Author: SCARLETRAIN <992127134@qq.com>
+Date:   Sat Mar 19 16:55:26 2022 +0000
+
+    test
+
+M	coursework/ReactionDiffusion.cpp
+
+commit 395646f158abf846e7bb6594b96de8908eaceb05
+Author: SCARLETRAIN <992127134@qq.com>
+Date:   Sat Mar 19 16:47:22 2022 +0000
+
+    test
+
+M	coursework/ReactionDiffusion.cpp
+M	coursework/output.txt
+
+commit fded3ebdd4e51a3362ac92ea2639cac631613285
+Author: SCARLETRAIN <992127134@qq.com>
+Date:   Sat Mar 19 16:40:45 2022 +0000
+
+    workflow
+
+M	coursework/ReactionDiffusion.cpp
+M	coursework/output.txt
+
+commit 93b661bf971128b5f54db82f1d99ee16df83968c
+Author: SCARLETRAIN <992127134@qq.com>
+Date:   Sat Mar 19 16:24:04 2022 +0000
+
+    workflow
+
+M	coursework/ReactionDiffusion.cpp
+M	coursework/main.cpp
+M	coursework/output.txt
+
+commit a77aea13bb56b9b78d8f942123842f5d4079c7d9
+Author: SCARLETRAIN <992127134@qq.com>
+Date:   Sat Mar 19 01:03:54 2022 +0000
+
+    bug fix
+
+M	coursework/Makefile
+M	coursework/ReactionDiffusion.cpp
+M	coursework/ReactionDiffusion.hpp
+M	coursework/coursework.mk
+M	coursework/coursework.project
+M	coursework/main.cpp
+M	coursework/output.txt
+
+commit 2f80b58062078adc3967a1bc08b76aa07b3296ea
+Author: SCARLETRAIN <992127134@qq.com>
+Date:   Fri Mar 18 19:26:50 2022 +0000
+
+    add parallel
+
+A	coursework/Makefile
+M	coursework/ReactionDiffusion.cpp
+M	coursework/ReactionDiffusion.hpp
+M	coursework/coursework.mk
+M	coursework/coursework.project
+M	coursework/main.cpp
+A	coursework/output.txt
+
+commit 5d55f834d0722844be24b36e6835d57fb31e0690
+Author: SCARLETRAIN <992127134@qq.com>
+Date:   Wed Mar 16 17:37:26 2022 +0000
+
+    workflow
+
+A	.codelite/.nfs00000000069b07ad0001577a
+M	.codelite/CW-jiaxuan_tang.tags
+M	.codelite/CW.session
+M	build-Debug/bin/coursework
+M	build-Debug/coursework/ReactionDiffusion.cpp.o
+M	coursework/ReactionDiffusion.cpp
+M	output.txt
+
+commit 75e6312b56de95a98f1522f5c17054a6c61e741d
+Merge: 00647a4 6414479
+Author: Jiaxuan Tang <41808009+SCARLETRAIN511@users.noreply.github.com>
+Date:   Wed Mar 16 17:31:33 2022 +0000
+
+    Merge pull request #1 from SCARLETRAIN511/dev/class
+    
+    add class
+
+commit 64144799d103a0b6bd2ddf53f0ffc1c25a19f485
+Author: SCARLETRAIN <992127134@qq.com>
+Date:   Wed Mar 16 17:27:17 2022 +0000
+
+    add class
+
+M	.codelite/CW-jiaxuan_tang.tags
+M	build-Debug/bin/coursework
+M	build-Debug/coursework/ReactionDiffusion.cpp.o
+M	build-Debug/coursework/main.cpp.o
+M	build-Debug/coursework/main.cpp.o.d
+M	coursework/ReactionDiffusion.cpp
+M	coursework/ReactionDiffusion.hpp
+M	coursework/main.cpp
+M	output.txt
+
+commit 00647a4be0c3ede720aa0389f31e74bd78c683fd
+Author: SCARLETRAIN <992127134@qq.com>
+Date:   Wed Mar 16 16:06:31 2022 +0000
+
+    finish the single core
+
+M	.codelite/CW-jiaxuan_tang.tags
+M	build-Debug/bin/coursework
+M	build-Debug/coursework/main.cpp.o
+M	coursework/main.cpp
+A	output.txt
+
+commit 847176209a1cba0c775fcef874442060fb036ded
+Author: SCARLETRAIN <992127134@qq.com>
+Date:   Wed Mar 16 03:58:49 2022 +0000
+
+    workflow
+
+M	.codelite/CW-jiaxuan_tang.tags
+M	build-Debug/bin/coursework
+M	build-Debug/coursework/ReactionDiffusion.cpp.o
+M	build-Debug/coursework/main.cpp.o
+M	coursework/ReactionDiffusion.cpp
+M	coursework/ReactionDiffusion.hpp
+M	coursework/coursework.mk
+M	coursework/main.cpp
+
+commit 153547636e330ea9d468a7e5e7c681e3d901a438
+Author: SCARLETRAIN <992127134@qq.com>
+Date:   Mon Mar 14 21:41:58 2022 +0000
+
+    solver update
+
+M	.codelite/CW-jiaxuan_tang.tags
+M	.codelite/CW.session
+M	Makefile
+A	build-Debug/bin/coursework
+A	build-Debug/coursework/.d
+A	build-Debug/coursework/ObjectsList.txt
+A	build-Debug/coursework/ReactionDiffusion.cpp.o
+A	build-Debug/coursework/ReactionDiffusion.cpp.o.d
+A	build-Debug/coursework/main.cpp.o
+A	build-Debug/coursework/main.cpp.o.d
+M	coursework/ReactionDiffusion.hpp
+A	coursework/coursework.mk
+M	coursework/coursework.project
+M	coursework/main.cpp
+
+commit 7e133657c18d3ab02865ec9f91bb2e6c7b013fc1
+Author: SCARLETRAIN <992127134@qq.com>
+Date:   Fri Mar 4 19:28:31 2022 +0000
+
+    workflow
+
+M	.codelite/CW-jiaxuan_tang.tags
+M	coursework/main.cpp
+
+commit 197569f99a8bcfc06783db9f5c26c6c9e5e00d9b
+Author: SCARLETRAIN <992127134@qq.com>
+Date:   Thu Mar 3 19:27:43 2022 +0000
+
+    Fill the initial U matrix
+
+M	.codelite/CW-jiaxuan_tang.tags
+M	coursework/main.cpp
+
+commit a7406f4f62e6585f074eebbd57cd64a1a83c95d0
+Author: SCARLETRAIN <992127134@qq.com>
+Date:   Sun Feb 27 19:46:51 2022 +0000
+
+    create the class for reaction diffusion
+
+M	.codelite/CW-jiaxuan_tang.tags
+A	coursework/ReactionDiffusion.cpp
+A	coursework/ReactionDiffusion.hpp
+M	coursework/coursework.project
+M	coursework/main.cpp
+M	tags
+
+commit 9d25d68fda25aabd595229db5d7ed06926cfea13
+Author: SCARLETRAIN <992127134@qq.com>
+Date:   Sun Feb 27 19:24:11 2022 +0000
+
+    workspace creation
+
+A	.codelite/CW-jiaxuan_tang.tags
+A	.codelite/CW.session
+A	.codelite/CW.workspace.jiaxuan_tang
+A	.codelite/ctags
+A	.codelite/subversion.conf
+A	.codelite/valgrind.memcheck.supp
+A	CW.mk
+A	CW.project
+A	CW.workspace
+A	Debug/.d
+A	Makefile
+A	compile_flags.txt
+A	coursework/compile_flags.txt
+A	coursework/coursework.project
+A	coursework/main.cpp
+A	tags
