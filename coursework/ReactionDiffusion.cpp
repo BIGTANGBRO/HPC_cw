@@ -23,7 +23,7 @@ ReactionDiffusion::ReactionDiffusion()
 	this ->h = 1.0;
 }
 
-void ReactionDiffusion::SetParameters(int &Nx, int &Ny, int &T, double &dt, double &a, double &b, double &mu1, double &mu2, double &eps){
+void ReactionDiffusion::SetParameters(int &Nx, int &Ny, int &T, double &dt, double &a, double &b, double &mu1, double &mu2, double &eps, int &c){
 	this -> Nx = Nx;
 	this -> Ny = Ny;
 	this -> u = new double[this->Nx*this->Ny];
@@ -35,6 +35,7 @@ void ReactionDiffusion::SetParameters(int &Nx, int &Ny, int &T, double &dt, doub
 	this -> mu1 = mu1;
 	this -> mu2 = mu2;
 	this -> eps = eps;
+	this -> c = c;
 }
 
 void ReactionDiffusion::SetInitialConditions(){
@@ -66,7 +67,7 @@ double* ReactionDiffusion::fillMatrixNy(double &mu){
 	double *A = new double[this->Ny * this->Ny];
 	int i;
 	
-	#pragma omp parallel for
+	#pragma omp parallel for num_threads(this->c)
 	for (i = 1;i < this->Ny-1;i++){
 		//A[(i-1)*Ny + i] = 1.0 * mu / (h*h);
 		A[(i)*Ny + i] = -2.0 * mu / (h*h);
@@ -87,7 +88,7 @@ double* ReactionDiffusion::fillMatrixNx(double &mu){
 	double *B = new double[this->Nx * this->Nx];
 	int i;
 	
-	#pragma omp parallel for
+	#pragma omp parallel for num_threads(this->c)
 	for (i = 1;i < this->Nx-1;i++){
 		//B[(i-1)*Nx + i] = 1.0 * mu / (h*h);
 		B[(i)*Nx + i] = -2.0 * mu / (h*h);
@@ -110,7 +111,7 @@ double* ReactionDiffusion::getf1(){
 	int j = 0;
 	
 	//for each element
-	#pragma omp parallel for
+	#pragma omp parallel for num_threads(this->c)
 	for (i = 0;i<Ny;i++){
 		for (j = 0;j<Nx;j++){
 			f1[j*Ny+i] = eps*u[j*Ny + i]*(1.0-u[j*Ny+i])*(u[j*Ny+i]-(v[j*Ny+i]+b)/a);
@@ -126,7 +127,7 @@ double* ReactionDiffusion::getf2(){
 	int i = 0;
 	int j = 0;
 	
-	#pragma omp parallel for
+	#pragma omp parallel for num_threads(this -> c)
 	for (i = 0;i<Ny;i++){
 		for (j = 0;j<Nx;j++){
 			f2[j*Ny+i] = u[j*Ny + i] * u[j*Ny + i] * u[j*Ny + i] - v[j*Ny+i];
@@ -152,7 +153,7 @@ void ReactionDiffusion::TimeIntegrations(){
 		double *tempV2 = new double[Ny*Nx];
 		
 		//using symmetrical matrix, calculate u in x and y directions
-		#pragma omp parallel
+		#pragma omp parallel num_threads(this->c)
 		{
 			#pragma omp single nowait
 			{
@@ -178,7 +179,7 @@ void ReactionDiffusion::TimeIntegrations(){
 		double *f2 = this->getf2();
 		
 		//add together to get u and v for each iteration
-		#pragma omp parallel
+		#pragma omp parallel num_threads(this->c)
 		{
 			#pragma omp single nowait
 			{
@@ -199,7 +200,18 @@ void ReactionDiffusion::TimeIntegrations(){
 				
 			}
 		}
-	}	
+		delete[] f1;
+		delete[] f2;
+		delete[] tempU1;
+		delete[] tempU2;
+		delete[] tempV1;
+		delete[] tempV2;
+	}
+
+	delete[] A1;
+	delete[] A2;
+	delete[] B1;
+	delete[] B2;
 }
 
 void ReactionDiffusion::writeInTxt(){
@@ -218,5 +230,7 @@ void ReactionDiffusion::writeInTxt(){
 
 ReactionDiffusion::~ReactionDiffusion()
 {
+	delete[] u;
+	delete[] v;
 }
 

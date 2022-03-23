@@ -50,7 +50,9 @@ int main(int argc, char *argv[])
 		("mu2", po::value<double>()->default_value(0.0),
 		 "mu2 value.")
 		("eps", po::value<double>()->default_value(50.0),
-		 "eps value.");
+		 "eps value.")
+		("c", po::value<int>()->default_value(16),
+		 "c value.");
 	
 	po::variables_map vm;
 	po::store(po::parse_command_line(argc, argv, opts), vm);
@@ -69,13 +71,14 @@ int main(int argc, char *argv[])
 	double mu1 = vm["mu1"].as<double>();
 	double mu2 = vm["mu2"].as<double>();
 	double eps = vm["eps"].as<double>();
+	int c = vm["c"].as<int>();
 	
 	clock_t start, end;
 	start = clock();
 	
 	//calculation process
 	ReactionDiffusion reaction;
-	reaction.SetParameters(Nx, Ny, T, dt, a, b, mu1, mu2, eps);
+	reaction.SetParameters(Nx, Ny, T, dt, a, b, mu1, mu2, eps, c);
 	reaction.SetInitialConditions();
 	reaction.TimeIntegrations();
 	reaction.writeInTxt();

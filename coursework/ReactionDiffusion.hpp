@@ -8,9 +8,9 @@ class ReactionDiffusion
 public:
 	ReactionDiffusion();
 	~ReactionDiffusion();
-		
+	
 	//methods
-	void SetParameters(int &Nx, int &Ny, int &T, double &dt, double &a, double &b, double &mu1, double &mu2, double &eps);
+	void SetParameters(int &Nx, int &Ny, int &T, double &dt, double &a, double &b, double &mu1, double &mu2, double &eps, int &c);
 	void SetInitialConditions();
 	void TimeIntegrations(); 
 	void writeInTxt();
@@ -29,6 +29,7 @@ private:
 	double mu2;
 	double eps;
 	double h;
+	int c;
 	
 	//Own methods
 	double *fillMatrixNy(double &mu);
